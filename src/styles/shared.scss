@@ -1,0 +1,36 @@
+.bg-container {
+  background : url("../assets/images/bg.png"); 
+  min-height: 100vh;
+  padding-top: 4rem;
+}
+
+.window-box {
+  background-color: white;
+  box-shadow: 2px 2px 6px rgb(0 0 0 / 22%);
+  margin: 1rem auto;
+  padding: 1.5rem 2.5rem !important;
+  border-radius: 4px;
+}
+
+.btn-primary {
+  background-color: #4CBB17 !important;
+	border: 1px solid #4CBB17 !important;
+	color: white !important;
+  
+  &:hover {
+    background-color: #3a8f13 !important;
+    border: 1px solid #3a8f13 !important;
+  }
+}
+
+.btn-secondary {
+  background-color: white !important;
+	border: 1px solid #4CBB17 !important;
+	color: #212121 !important;
+  
+  &:hover {
+    background-color: #4CBB17 !important;
+    border: 1px solid #4CBB17 !important;
+    color: white !important;
+  }
+}

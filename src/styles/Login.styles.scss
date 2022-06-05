@@ -1,0 +1,33 @@
+.login {
+  &--title {
+    font-weight: bolder;
+    margin-bottom: 1rem;
+  }
+
+  &--form-group {
+    margin-bottom: 1rem;
+  }
+
+  &--input {
+    color: #212121;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid grey;
+
+    &:focus {
+      color: #212121;
+      border: none;
+      border-radius: 0;
+      border-bottom: 2px solid #4CBB17;
+      box-shadow: none !important;
+    }
+  }
+
+  &--register-link {
+    text-decoration: none !important;
+
+    &:hover {
+      text-decoration: underline !important;
+    }
+  }
+}
