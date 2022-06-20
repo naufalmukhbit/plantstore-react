@@ -1,15 +1,21 @@
 /*Navbar Style*/
+$max_tablet: 768px;
 .navbar {
 	transition: 0.2s;
 	padding-right: 1rem;
 	padding-left: 1rem;
 
+	@media screen and (max-width: $max_tablet) {
+		padding: {
+			left: 0;
+			right: 0;
+		};
+	}
+
 	&--shadow {
+		@extend .navbar;
 		box-shadow: 0 2px 10px rgba(0, 0, 0, 0.22);
-		transition: 0.2s;
 		background-color: white;
-		padding-right: 1rem;
-		padding-left: 1rem;
 	}
 
 	&--avatar {
@@ -68,4 +74,23 @@
 	position: absolute;
 	right: -5px;
 	top: -5px;
+}
+.nav-link.dropdown-toggle {
+	@media screen and (max-width: $max_tablet) {
+		padding: {
+			left: 0.5rem !important;
+			right: 0 !important;
+		};
+	}
+}
+
+.dropdown-toggle::after {
+	@media screen and (max-width: $max_tablet) {
+		display: none;
+	}
+}
+
+.dropdown-menu[data-bs-popper] {
+	right: 0;
+	left: unset;
 }

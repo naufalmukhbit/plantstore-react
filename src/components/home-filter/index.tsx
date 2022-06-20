@@ -3,7 +3,7 @@ import { Card, Button } from "react-bootstrap";
 
 import "./index.scss";
 
-export default function HomeFilter() {
+export default function HomeFilter(props: any) {
 	const [minValue, setMinValue] = useState(0);
 	const [maxValue, setMaxValue] = useState(9999999);
 
@@ -15,9 +15,9 @@ export default function HomeFilter() {
 		setMaxValue(parseInt(e.target.value));
 	};
 
-	return (
-		<Card className="home-filter--container">
-			<strong className="mb-4">FILTER YOUR SEARCH</strong>
+	const renderFilterContent = () => (
+		<>
+			{!props.noCard && <strong className="mb-4">FILTER YOUR SEARCH</strong>}
 			<div className="slidecontainer">
 				<label htmlFor="min-price">Minimum Price : </label>
 				<span id="min-price-info">{minValue}</span>
@@ -50,6 +50,16 @@ export default function HomeFilter() {
 				<Button>Submit</Button>
 				<Button variant="secondary">Reset</Button>
 			</div>
+		</>
+	)
+
+	return props.noCard ? (
+		<div>
+			{renderFilterContent()}
+		</div>
+	) : (
+		<Card className="home-filter--container">
+			{renderFilterContent()}
 		</Card>
 	);
 }

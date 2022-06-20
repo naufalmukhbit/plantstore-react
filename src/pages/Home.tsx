@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Button, Col, Container, Nav, Row, Card } from "react-bootstrap";
+import { useState, useEffect, ReactNode } from "react";
+import { Button, Col, Container, Nav, Row, Card, Modal } from "react-bootstrap";
 import Navbar from "components/navbar";
 import Banner from "components/banner";
 import HomeFilter from "components/home-filter";
@@ -21,8 +21,20 @@ interface HomeProductsType {
 
 const Home = () => {
 	const [homeProducts, setHomeProducts] = useState<HomeProductsType[]>([]);
+	const [loggedIn, setLoggedIn] = useState(false);
+	const [sheetOpen, setSheetOpen] = useState(false);
+	const [sheetTitle, setSheetTitle] = useState("Menu");
+	const [sheetContent, setSheetContent] = useState<ReactNode>();
+	const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
 
-	/** Temporarily set data */
+	useEffect(() => {
+		const changeWidth = () =>
+			setViewportWidth(window.innerWidth);
+		window.addEventListener("resize", changeWidth);
+		return () => window.removeEventListener("resize", changeWidth);
+	}, []);
+
+	/** Temporarily set data */	
 	useEffect(() => {
 		let temp: HomeProductsType[] = [];
 		for (let i = 0; i < 12; i++) {
@@ -60,13 +72,43 @@ const Home = () => {
 		</Card>
 	);
 
+	const onOpenFilter = () => {
+		setSheetContent(<HomeFilter noCard />);
+		setSheetTitle("Filter Your Search");
+		setSheetOpen(true);
+	};
+
+	const onOpenProfileMenu = () => {
+		if (loggedIn) {
+			setSheetContent(<div>Hello</div>);
+		} else {
+			setSheetContent(
+				<div>
+					<Link to="/login">
+						<Button
+							className="navbar--btn-login"
+							variant="link"
+						>
+							Login
+						</Button>
+					</Link>
+					<Link to="/register">
+						<Button>Sign Up</Button>
+					</Link>
+				</div>
+			)
+		}
+		setSheetTitle("Menu");
+		setSheetOpen(true);
+	}
+
 	return (
 		<div>
 			<Navbar transparent />
 			<Container className="home--content">
 				<Banner imageData={bannerData} />
 				<Row>
-					<Col lg={8}>
+					<Col xs={12} lg={8}>
 						<Nav
 							variant="pills"
 							defaultActiveKey="featured"
@@ -74,30 +116,33 @@ const Home = () => {
 							className="home--categories"
 						>
 							<Nav.Item>
-								<Nav.Link eventKey="featured">
-									FEATURED
-								</Nav.Link>
+								<Nav.Link eventKey="featured">Featured</Nav.Link>
 							</Nav.Item>
 							<Nav.Item>
-								<Nav.Link eventKey="new">WHAT'S NEW</Nav.Link>
+								<Nav.Link eventKey="new">New</Nav.Link>
 							</Nav.Item>
 							<Nav.Item>
-								<Nav.Link eventKey="budget">
-									LOW BUDGET
-								</Nav.Link>
+								<Nav.Link eventKey="budget">Budget</Nav.Link>
 							</Nav.Item>
+							{viewportWidth < 992 && (
+								<Button variant="link" className="home--filter-btn" onClick={onOpenFilter}>
+									Filter
+								</Button>
+							)}
 						</Nav>
-						<Container>
+						<Container className="home--product-container">
 							<Row className="g-3">
-								{homeProducts.map((item) => (
-									<Col md={4}>{renderProduct(item)}</Col>
+								{homeProducts.map((item, index) => (
+									<Col xs={6} md={4} key={index}>{renderProduct(item)}</Col>
 								))}
 							</Row>
 						</Container>
 					</Col>
-					<Col lg={4}>
-						<HomeFilter />
-					</Col>
+					{viewportWidth > 991 && (
+						<Col lg={4}>
+							<HomeFilter />
+						</Col>
+					)}
 				</Row>
 			</Container>
 			<Container fluid className="home--footer">
@@ -110,6 +155,14 @@ const Home = () => {
 					</Col>
 				</Row>
 			</Container>
+			<Modal fullscreen show={sheetOpen} onHide={() => setSheetOpen(false)}>
+				<Modal.Header closeButton>
+					{sheetTitle}
+				</Modal.Header>
+				<Modal.Body>
+					{sheetContent}
+				</Modal.Body>
+			</Modal>
 		</div>
 	);
 };

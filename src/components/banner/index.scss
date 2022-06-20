@@ -1,11 +1,17 @@
 .banner {
   &--container {
     margin: 4rem auto 3rem !important;
+    @media screen and (max-width: 768px) {
+      margin-bottom: 1rem !important;
+    }
   }
 
   &--box {
-    width: 70%;
     margin: auto;
+    
+    @media screen and (min-width: 769px) {
+      width: 70%;
+    }
   }
 
   &--image {

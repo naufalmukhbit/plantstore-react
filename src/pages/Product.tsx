@@ -10,10 +10,10 @@ const ProductPage = () => {
 			<div className="bg-container">
 				<Container className="window-box">
 					<Row className="row justify-content-center">
-						<Col xs={4}>
+						<Col xs={12} lg={4}>
 							<img className="product--image" src={noImageSq} />
 						</Col>
-						<Col xs={8} className="desc">
+						<Col xs={12} lg={8} className="desc">
 							<h2>Product Name</h2>
 							<h5 id="price">Rp 249999</h5>
 							<p>Product Description</p>
