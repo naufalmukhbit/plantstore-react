@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Plantstore",
+  "name": "Plantstore: Your Agriculture Companion",
   "icons": [
     {
       "src": "favicon.ico",

@@ -10,8 +10,12 @@ import { noImageSq } from "assets/images";
 import { Link } from "react-router-dom";
 
 import "../styles/Home.styles.scss";
+import { formatPrice } from "services/common";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 
 interface HomeProductsType {
+	id: string;
 	name: string;
 	seller: string;
 	price: number;
@@ -19,9 +23,51 @@ interface HomeProductsType {
 	imageURL: string;
 }
 
+// const category = [
+// 	{
+// 		key: "featured",
+// 		name: "Featured",
+// 	},
+// 	{
+// 		key: "new",
+// 		name: "New",
+// 	},
+// 	{
+// 		key: "budget",
+// 		name: "Budget",
+// 	},
+// ];
+
+const tempCategory = [
+	{
+		key: "all",
+		name: "All",
+	}, 
+	{
+		key: "electronics",
+		name: "Electronics",
+	}, 
+	{
+		key: "jewelery",
+		name: "Jewelery",
+	}, 
+	{
+		key: "men's clothing",
+		name: "Men's Clothing",
+	}, 
+	{
+		key: "women's clothing",
+		name: "Women's Clothing",
+	}, 
+]
+
 const Home = () => {
+	document.title = "Plantstore - Your Agriculture Companion";
+
 	const [homeProducts, setHomeProducts] = useState<HomeProductsType[]>([]);
+	const [loading, setLoading] = useState(true);
 	const [loggedIn, setLoggedIn] = useState(false);
+	const [category, setCategory] = useState("all");
 	const [sheetOpen, setSheetOpen] = useState(false);
 	const [sheetTitle, setSheetTitle] = useState("Menu");
 	const [sheetContent, setSheetContent] = useState<ReactNode>();
@@ -34,36 +80,49 @@ const Home = () => {
 		return () => window.removeEventListener("resize", changeWidth);
 	}, []);
 
-	/** Temporarily set data */	
+	/** Use data from Fake Store API */
 	useEffect(() => {
-		let temp: HomeProductsType[] = [];
-		for (let i = 0; i < 12; i++) {
-			temp.push({
-				name: "Product Name",
-				seller: "Plantstore Indonesia",
-				price: 249999,
-				link: "#product",
-				imageURL: "",
+		let url = category === "all"
+			? "https://fakestoreapi.com/products"
+			: `https://fakestoreapi.com/products/category/${category}`
+		fetch(url)
+			.then(res => res.json())
+			.then(json => {
+				setHomeProducts(json.map((item: any) => ({
+					id: item.id,
+					name: item.title,
+					seller: "Plantstore Indonesia",
+					price: item.price * 14000,
+					link: "#product",
+					imageURL: item.image,
+				})));
+				setLoading(false);
 			});
-		}
-
-		setHomeProducts(temp);
-	}, []);
+	}, [category]);
 
 	const renderProduct = (data: HomeProductsType) => (
 		<Card>
-			<Card.Img variant="top" src={noImageSq} alt="Product" />
+			<div className="home--product-image-container">
+				<Card.Img
+					variant="top"
+					src={data.imageURL ?? noImageSq}
+					alt="Product"
+					className="home--product-image"
+				/>
+			</div>
 			<Card.Body>
 				<Card.Title className="home--product-name">
-					<a href="#">{data.name}</a>
+					<Link to={`/product/${data.id}`}>
+						{data.name}
+					</Link>
 				</Card.Title>
 				<Card.Subtitle className="home--product-seller">
 					by {data.seller}
 				</Card.Subtitle>
 				<Card.Text className="home--product-price">
-					<strong>Rp {data.price}</strong>
+					<strong>Rp {formatPrice(data.price)}</strong>
 				</Card.Text>
-				<Link to="/product">
+				<Link to={`/product/${data.id}`}>
 					<Button variant="secondary" className="home--product-view">
 						VIEW PRODUCT
 					</Button>
@@ -100,7 +159,12 @@ const Home = () => {
 		}
 		setSheetTitle("Menu");
 		setSheetOpen(true);
-	}
+	};
+
+	const onChangeCategory = (cat: string | null) => {
+		setLoading(true);
+		setCategory(cat === null ? "all" : cat);
+	};
 
 	return (
 		<div>
@@ -111,32 +175,37 @@ const Home = () => {
 					<Col xs={12} lg={8}>
 						<Nav
 							variant="pills"
-							defaultActiveKey="featured"
-							onSelect={(e) => console.log(e)}
+							defaultActiveKey="all"
+							onSelect={(e) => onChangeCategory(e)}
 							className="home--categories"
+							navbarScroll
 						>
-							<Nav.Item>
-								<Nav.Link eventKey="featured">Featured</Nav.Link>
-							</Nav.Item>
-							<Nav.Item>
-								<Nav.Link eventKey="new">New</Nav.Link>
-							</Nav.Item>
-							<Nav.Item>
-								<Nav.Link eventKey="budget">Budget</Nav.Link>
-							</Nav.Item>
-							{viewportWidth < 992 && (
-								<Button variant="link" className="home--filter-btn" onClick={onOpenFilter}>
-									Filter
-								</Button>
-							)}
+							{tempCategory.map((item) => (
+								<Nav.Item>
+									<Nav.Link eventKey={item.key} className="home--category-btn">
+										{item.name}
+									</Nav.Link>
+								</Nav.Item>
+							))}
 						</Nav>
-						<Container className="home--product-container">
-							<Row className="g-3">
-								{homeProducts.map((item, index) => (
-									<Col xs={6} md={4} key={index}>{renderProduct(item)}</Col>
-								))}
-							</Row>
-						</Container>
+						{viewportWidth < 992 && (
+							<Button variant="link" className="home--filter-btn" onClick={onOpenFilter}>
+								<FontAwesomeIcon icon={solid("sliders")} />
+								{" "}
+								Filters...
+							</Button>
+						)}
+						{loading ? (
+							<div>Loading...</div>
+						) : (
+							<Container className="home--product-container">
+								<Row className="g-3">
+									{homeProducts.map((item, index) => (
+										<Col xs={6} md={4} key={index}>{renderProduct(item)}</Col>
+									))}
+								</Row>
+							</Container>
+						)}
 					</Col>
 					{viewportWidth > 991 && (
 						<Col lg={4}>
@@ -151,7 +220,7 @@ const Home = () => {
 						<a href="#">About us</a>
 					</Col>
 					<Col xs={6} className="w-50">
-						&copy; Plantstore 2019. All rights reserved.
+						&copy; Plantstore 2022. All rights reserved.
 					</Col>
 				</Row>
 			</Container>
