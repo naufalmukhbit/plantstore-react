@@ -20,7 +20,7 @@ export default function Banner({imageData}: BannerProps) {
         }
       >
         {imageData.map((item, index) => (
-          <Carousel.Item>
+          <Carousel.Item key={`home_banner_${index}`}>
             <img
               src={item}
               alt={`Banner ${index + 1}`}

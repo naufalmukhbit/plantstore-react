@@ -13,6 +13,7 @@ import "../styles/Home.styles.scss";
 import { formatPrice } from "services/common";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
+import { useSelector } from "store/hooks";
 
 interface HomeProductsType {
 	id: string;
@@ -66,12 +67,13 @@ const Home = () => {
 
 	const [homeProducts, setHomeProducts] = useState<HomeProductsType[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [loggedIn, setLoggedIn] = useState(false);
 	const [category, setCategory] = useState("all");
 	const [sheetOpen, setSheetOpen] = useState(false);
 	const [sheetTitle, setSheetTitle] = useState("Menu");
 	const [sheetContent, setSheetContent] = useState<ReactNode>();
 	const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
+
+	const { loggedIn } = useSelector(state => state.app);
 
 	useEffect(() => {
 		const changeWidth = () =>
@@ -181,7 +183,7 @@ const Home = () => {
 							navbarScroll
 						>
 							{tempCategory.map((item) => (
-								<Nav.Item>
+								<Nav.Item key={item.key}>
 									<Nav.Link eventKey={item.key} className="home--category-btn">
 										{item.name}
 									</Nav.Link>

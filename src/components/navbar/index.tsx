@@ -13,6 +13,7 @@ import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import "./index.scss";
 import { logo, defaultPP } from "assets/images";
 import { Link } from "react-router-dom";
+import { useSelector } from "store/hooks";
 
 interface NavbarProps {
 	transparent?: boolean;
@@ -20,9 +21,11 @@ interface NavbarProps {
 }
 
 export default function AppNavbar({ transparent, noAction }: NavbarProps) {
-	const [loggedIn, setLoggedIn] = useState(false);
+	// const [loggedIn, setLoggedIn] = useState(false);
 	const [cartAmount, setCartAmount] = useState(0);
 	const [shadowClass, setShadowClass] = useState("navbar");
+
+	const { loggedIn } = useSelector(state => state.app);
 
 	useEffect(() => {
 		const changeShadow = () =>

@@ -28,7 +28,6 @@ const ProductPage = () => {
 		fetch(`https://fakestoreapi.com/products/${productId}`)
 			.then(res => res.json())
 			.then(json => {
-				console.log(json)
 				document.title = json.title + " - Plantstore";
 				setProductData({
 					id: json.id,
@@ -58,14 +57,14 @@ const ProductPage = () => {
 
 		return (
 			<div className="product--stars">
-				{Array.from(Array(fullStar), x => (
-					<FontAwesomeIcon icon={solid("star")} />
+				{Array.from(Array(fullStar), (x, i) => (
+					<FontAwesomeIcon icon={solid("star")} key={`star_full_${i}`} />
 				))}
 				{halfStar && (
 					<FontAwesomeIcon icon={solid("star-half-stroke")} />
 				)}
-				{Array.from(Array(emptyStar), x => (
-					<FontAwesomeIcon icon={regular("star")} />
+				{Array.from(Array(emptyStar), (x, i) => (
+					<FontAwesomeIcon icon={regular("star")} key={`star_empty_${i}`} />
 				))}
 			</div>
 		)
